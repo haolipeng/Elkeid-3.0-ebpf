@@ -1,0 +1,311 @@
+/* SPDX-License-Identifier: GPL-2.0 */
+
+#ifndef __STRUCT_WRAP_H_
+#define __STRUCT_WRAP_H_
+
+#if IS_ENABLED(CONFIG_X86_64)
+
+static inline void smith_regs_set_return_value(struct pt_regs *regs, unsigned long rc) {
+   regs->ax = rc;
+}
+
+static inline unsigned long p_regs_get_arg1(struct pt_regs *p_regs) {
+   return p_regs->di;
+}
+
+static inline unsigned long p_regs_get_arg2(struct pt_regs *p_regs) {
+   return p_regs->si;
+}
+
+static inline unsigned long p_regs_get_arg3(struct pt_regs *p_regs) {
+   return p_regs->dx;
+}
+
+static inline unsigned long p_regs_get_arg4(struct pt_regs *p_regs) {
+   return p_regs->cx;
+}
+
+static inline unsigned long p_regs_get_arg5(struct pt_regs *p_regs) {
+   return p_regs->r8;
+}
+
+static inline unsigned long p_regs_get_arg6(struct pt_regs *p_regs) {
+   return p_regs->r9;
+}
+
+#elif IS_ENABLED(CONFIG_X86)
+
+static inline void smith_regs_set_return_value(struct pt_regs *regs, unsigned long rc) {
+   regs->ax = rc;
+}
+
+static inline unsigned long p_regs_get_arg1(struct pt_regs *p_regs) {
+   return p_regs->ax;
+}
+
+static inline unsigned long p_regs_get_arg2(struct pt_regs *p_regs) {
+   return p_regs->dx;
+}
+
+static inline unsigned long p_regs_get_arg3(struct pt_regs *p_regs) {
+   return p_regs->cx;
+}
+
+static inline unsigned long p_regs_get_arg4(struct pt_regs *p_regs) {
+    unsigned long *args;
+    if (p_regs->sp > (unsigned long)p_regs && p_regs->sp < p_regs->bp)
+        args = (unsigned long *)p_regs->sp;
+    else
+        args = (unsigned long *)&p_regs->sp;
+    return args[1]; /* ret */
+}
+
+static inline unsigned long p_regs_get_arg5(struct pt_regs *p_regs) {
+   unsigned long *args;
+   if (p_regs->sp > (unsigned long)p_regs && p_regs->sp < p_regs->bp)
+      args = (unsigned long *)p_regs->sp;
+   else
+      args = (unsigned long *)&p_regs->sp;
+   return args[2]; /* ret */
+}
+
+static inline unsigned long p_regs_get_arg6(struct pt_regs *p_regs) {
+   unsigned long *args;
+   if (p_regs->sp > (unsigned long)p_regs && p_regs->sp < p_regs->bp)
+      args = (unsigned long *)p_regs->sp;
+   else
+      args = (unsigned long *)&p_regs->sp;
+   return args[3]; /* ret */
+}
+
+#elif IS_ENABLED(CONFIG_ARM64)
+
+static inline void smith_regs_set_return_value(struct pt_regs *regs, unsigned long rc) {
+   regs->regs[0] = rc;
+}
+
+static inline unsigned long p_regs_get_arg1(struct pt_regs *p_regs) {
+   return p_regs->regs[0];
+}
+
+static inline unsigned long p_regs_get_arg2(struct pt_regs *p_regs) {
+   return p_regs->regs[1];
+}
+
+static inline unsigned long p_regs_get_arg3(struct pt_regs *p_regs) {
+   return p_regs->regs[2];
+}
+
+static inline unsigned long p_regs_get_arg4(struct pt_regs *p_regs) {
+   return p_regs->regs[3];
+}
+
+static inline unsigned long p_regs_get_arg5(struct pt_regs *p_regs) {
+   return p_regs->regs[4];
+}
+
+static inline unsigned long p_regs_get_arg6(struct pt_regs *p_regs) {
+   return p_regs->regs[5];
+}
+
+#elif IS_ENABLED(CONFIG_ARCH_RV64I)
+
+static inline void smith_regs_set_return_value(struct pt_regs *regs, unsigned long rc) {
+   regs->a0 = rc;
+}
+
+static inline unsigned long p_regs_get_arg1(struct pt_regs *p_regs) {
+   return p_regs->a0;
+}
+
+static inline unsigned long p_regs_get_arg2(struct pt_regs *p_regs) {
+   return p_regs->a1;
+}
+
+static inline unsigned long p_regs_get_arg3(struct pt_regs *p_regs) {
+   return p_regs->a2;
+}
+
+static inline unsigned long p_regs_get_arg4(struct pt_regs *p_regs) {
+   return p_regs->a3;
+}
+
+static inline unsigned long p_regs_get_arg5(struct pt_regs *p_regs) {
+   return p_regs->a4;
+}
+
+static inline unsigned long p_regs_get_arg6(struct pt_regs *p_regs) {
+   return p_regs->a5;
+}
+
+#endif
+
+#if IS_ENABLED(CONFIG_X86_64)
+
+static inline unsigned long p_regs_get_arg1_syscall(struct pt_regs *p_regs) {
+   return p_regs->di;
+}
+
+static inline unsigned long p_regs_get_arg1_of_syscall(struct pt_regs *p_regs) {
+   return p_regs->di;
+}
+
+static inline unsigned long p_regs_get_arg2_syscall(struct pt_regs *p_regs) {
+   return p_regs->si;
+}
+
+static inline unsigned long p_regs_get_arg3_syscall(struct pt_regs *p_regs) {
+   return p_regs->dx;
+}
+
+static inline unsigned long p_regs_get_arg4_syscall(struct pt_regs *p_regs) {
+   return p_regs->r10;
+}
+
+static inline unsigned long p_regs_get_arg5_syscall(struct pt_regs *p_regs) {
+   return p_regs->r8;
+}
+
+static inline unsigned long p_regs_get_arg6_syscall(struct pt_regs *p_regs) {
+   return p_regs->r9;
+}
+
+#elif IS_ENABLED(CONFIG_X86)
+
+static inline unsigned long p_regs_get_arg1_syscall(struct pt_regs *p_regs) {
+   return p_regs->bx;
+}
+
+static inline unsigned long p_regs_get_arg1_of_syscall(struct pt_regs *p_regs) {
+   return p_regs->bx;
+}
+
+static inline unsigned long p_regs_get_arg2_syscall(struct pt_regs *p_regs) {
+   return p_regs->cx;
+}
+
+static inline unsigned long p_regs_get_arg3_syscall(struct pt_regs *p_regs) {
+   return p_regs->dx;
+}
+
+static inline unsigned long p_regs_get_arg4_syscall(struct pt_regs *p_regs) {
+   return p_regs->si;
+}
+
+static inline unsigned long p_regs_get_arg5_syscall(struct pt_regs *p_regs) {
+   return p_regs->di;
+}
+
+static inline unsigned long p_regs_get_arg6_syscall(struct pt_regs *p_regs) {
+   return p_regs->bp;
+}
+
+#elif IS_ENABLED(CONFIG_ARM64)
+
+static inline unsigned long p_regs_get_arg1_syscall(struct pt_regs *p_regs) {
+   return p_regs->regs[0];
+}
+static inline unsigned long p_regs_get_arg1_of_syscall(struct pt_regs *p_regs) {
+   return p_regs->orig_x0;
+}
+
+static inline unsigned long p_regs_get_arg2_syscall(struct pt_regs *p_regs) {
+   return p_regs->regs[1];
+}
+
+static inline unsigned long p_regs_get_arg3_syscall(struct pt_regs *p_regs) {
+   return p_regs->regs[2];
+}
+
+static inline unsigned long p_regs_get_arg4_syscall(struct pt_regs *p_regs) {
+   return p_regs->regs[3];
+}
+
+static inline unsigned long p_regs_get_arg5_syscall(struct pt_regs *p_regs) {
+   return p_regs->regs[4];
+}
+
+static inline unsigned long p_regs_get_arg6_syscall(struct pt_regs *p_regs) {
+   return p_regs->regs[5];
+}
+
+#elif IS_ENABLED(CONFIG_ARCH_RV64I)
+
+static inline unsigned long p_regs_get_arg1_syscall(struct pt_regs *p_regs) {
+   return p_regs->a0;
+}
+
+static inline unsigned long p_regs_get_arg1_of_syscall(struct pt_regs *p_regs) {
+   return p_regs->orig_a0;
+}
+
+static inline unsigned long p_regs_get_arg2_syscall(struct pt_regs *p_regs) {
+   return p_regs->a1;
+}
+
+static inline unsigned long p_regs_get_arg3_syscall(struct pt_regs *p_regs) {
+   return p_regs->a2;
+}
+
+static inline unsigned long p_regs_get_arg4_syscall(struct pt_regs *p_regs) {
+   return p_regs->a3;
+}
+
+static inline unsigned long p_regs_get_arg5_syscall(struct pt_regs *p_regs) {
+   return p_regs->a4;
+}
+
+static inline unsigned long p_regs_get_arg6_syscall(struct pt_regs *p_regs) {
+   return p_regs->a5;
+}
+#endif
+
+// Only Get Syscall Functions Parameter Can Use p_get_arg()
+static inline unsigned long p_get_arg1_syscall(struct pt_regs *p_regs) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 17, 0) && defined(CONFIG_ARCH_HAS_SYSCALL_WRAPPER)
+    return p_regs_get_arg1_syscall((struct pt_regs *)p_regs_get_arg1_syscall(p_regs));
+#else
+    return p_regs_get_arg1_syscall(p_regs);
+#endif
+}
+
+static inline unsigned long p_get_arg2_syscall(struct pt_regs *p_regs) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 17, 0) && defined(CONFIG_ARCH_HAS_SYSCALL_WRAPPER)
+    return p_regs_get_arg2_syscall((struct pt_regs *)p_regs_get_arg1_syscall(p_regs));
+#else
+    return p_regs_get_arg2_syscall(p_regs);
+#endif
+}
+
+static inline unsigned long p_get_arg3_syscall(struct pt_regs *p_regs) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 17, 0) && defined(CONFIG_ARCH_HAS_SYSCALL_WRAPPER)
+    return p_regs_get_arg3_syscall((struct pt_regs *)p_regs_get_arg1_syscall(p_regs));
+#else
+    return p_regs_get_arg3_syscall(p_regs);
+#endif
+}
+
+static inline unsigned long p_get_arg4_syscall(struct pt_regs *p_regs) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 17, 0) && defined(CONFIG_ARCH_HAS_SYSCALL_WRAPPER)
+    return p_regs_get_arg4_syscall((struct pt_regs *)p_regs_get_arg1_syscall(p_regs));
+#else
+    return p_regs_get_arg4_syscall(p_regs);
+#endif
+}
+
+static inline unsigned long p_get_arg5_syscall(struct pt_regs *p_regs) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 17, 0) && defined(CONFIG_ARCH_HAS_SYSCALL_WRAPPER)
+    return p_regs_get_arg5_syscall((struct pt_regs *)p_regs_get_arg1_syscall(p_regs));
+#else
+    return p_regs_get_arg5_syscall(p_regs);
+#endif
+}
+
+static inline unsigned long p_get_arg6_syscall(struct pt_regs *p_regs) {
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 17, 0) && defined(CONFIG_ARCH_HAS_SYSCALL_WRAPPER)
+    return p_regs_get_arg6_syscall((struct pt_regs *)p_regs_get_arg1_syscall(p_regs));
+#else
+    return p_regs_get_arg6_syscall(p_regs);
+#endif
+}
+#endif

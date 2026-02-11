@@ -1,0 +1,134 @@
+# INSTALL MAUNAL
+## Compile Environment
+
+### CMake
+
+* CMake 3.17 and above needed.
+* Download binary from [cmake.org/download](https://cmake.org/download/).
+
+```bash=
+curl -fsSL https://github.com/Kitware/CMake/releases/download/v3.23.2/cmake-3.23.2-linux-x86_64.tar.gz | tar -xz -C /opt
+```
+
+### GCC
+
+* GCC 8 and above needed.
+
+### Musl
+
+* download pre-built binray from CDN.
+
+```bash=
+curl -fsSL https://sf1-cdn-tos.douyinstatic.com/obj/eden-cn/laahweh7uhwbps/x86_64-linux-musl-1.2.2.tar.gz | tar -xz -C /opt
+```
+
+* build from [musl-cross-make](https://github.com/Hackerl/musl-cross-make).
+
+### Rust
+
+* install Rust compiler via rustup.
+```bash=
+curl -fsSL https://sh.rustup.rs | sh -s -- -y --no-modify-path -t x86_64-unknown-linux-musl
+export PATH=/root/.cargo/bin:$PATH
+```
+
+* (OPTIONAL) using rustup mirror for boostup rust tools-chain download speed.
+
+```bash=
+export RUSTUP_DIST_SERVER=https://mirrors.ustc.edu.cn/rust-static
+export RUSTUP_UPDATE_ROOT=https://mirrors.ustc.edu.cn/rust-static/rustup
+```
+
+### JDK
+
+* install OpenJDK 14 on x64 linux.
+
+```bash=
+curl -O curl -fsSL https://download.java.net/java/GA/jdk14.0.2/205943a0976c4ed48cb16f1043c5c647/12/GPL/openjdk-14.0.2_linux-x64_bin.tar.gz | tar -xz -C /opt
+export PATH=/opt/jdk-14.0.2/bin:$PATH
+```
+
+* (OPTIONAL) using maven mirror repo.
+```bash=
+mkdir -p ~/.gradle
+cat <<EOT > ~/.gradle/init.gradle
+allprojects {
+    buildscript {
+        repositories {
+            mavenLocal()
+            maven { url 'https://maven.aliyun.com/repository/central' }
+            maven { url 'https://maven.aliyun.com/repository/jcenter' }
+            maven { url 'https://maven.aliyun.com/repository/google' }
+            maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+            maven { url 'https://maven.aliyun.com/repository/apache-snapshots' }
+        }
+    }
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/central' }
+        maven { url 'https://maven.aliyun.com/repository/jcenter' }
+        maven { url 'https://maven.aliyun.com/repository/google' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/apache-snapshots' }
+    }
+}
+EOT
+```
+
+### Python
+* Require header files for python extensions build.
+
+```bash=
+apt install python-dev python3-dev
+```
+
+* python3 with newest pip
+
+```bash=
+pip3 install setuptools
+pip3 install wheel
+```
+
+### PHP header
+API incompatibility between php versions, we need to download header files for all versions to compile.
+
+```bash=
+curl -fsSL https://lf3-static.bytednsdoc.com/obj/eden-cn/laahweh7uhwbps/php-headers.tar.gz | tar -xz -C /path/to/php-headers
+```
+
+## Build
+
+* build all via makefile
+
+```bash=
+make -j$(nproc) build \
+    PY_PREBUILT=TRUE \
+    PHP_HEADERS=/path/to/php-headers \
+    PYTHON2_INCLUDE=/path/to/include/python2.7 \
+    PYTHON3_INCLUDE=/path/to/include/python3 \
+    VERSION=0.0.0.1
+```
+
+* for full static build (shared library still depends on glibc)
+
+```bash=
+make -j$(nproc) build \
+    STATIC=TRUE \
+    PY_PREBUILT=TRUE \
+    CC=/opt/x86_64-linux-musl-1.2.2/bin/x86_64-linux-musl-gcc \
+    CXX=/opt/x86_64-linux-musl-1.2.2/bin/x86_64-linux-musl-g++ \
+    LD=/opt/x86_64-linux-musl-1.2.2/bin/x86_64-linux-musl-ld \
+    CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=/opt/x86_64-linux-musl-1.2.2/bin/x86_64-linux-musl-ld \
+    GNU_CC=/opt/gcc-10.4.0/bin/gcc \
+    GNU_CXX=/opt/gcc-10.4.0/bin/g++ \
+    PHP_HEADERS=/path/to/php-headers \
+    PYTHON2_INCLUDE=/path/to/include/python2.7 \
+    PYTHON3_INCLUDE=/path/to/include/python3 \
+    VERSION=0.0.0.1
+```
+
+## INSTALL
+
+```bash=
+sudo make install
+```

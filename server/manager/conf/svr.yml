@@ -1,0 +1,55 @@
+http:
+  port: 6701
+  innerauth:
+    z29u91nlt19g8mw2: 6uo3cj7sux30sd8bzw3ua2drgmxczdt5
+  apiauth:
+    enable: true
+    secret: lqyy8azdsbnjrry6pzkznn52z3v2g734
+
+log:
+  path: ./log/svr.log
+  loglevel: 0
+
+sd:
+  addrs:
+    - 127.0.0.1:8088
+  name: hids_manage
+  credentials:
+    ak: ekwjsyj2iucfotiy
+    sk: kqxxfphfxj6ud9pon1zyf2oyqrda3xdt
+
+server:
+  name: hids_svr
+  credentials:
+    ak: ekwjsyj2iucfotiy
+    sk: kqxxfphfxj6ud9pon1zyf2oyqrda3xdt
+
+redis:
+  addrs:
+    - 127.0.0.1:6379
+  passwd: r65154g72q7gqpr2tc
+  mastername: ""
+
+mongo:
+  uri: mongodb://elkeid:c596988d134go1qran@10.227.2.103:27017/elkeid?authSource=elkeid
+  dbname: elkeid
+
+trace:
+  enable: true
+  cluster: security.elkeid.hub
+  input_id: hids
+  ruleset_id: rule_rasp_handle_rawdata
+  rasp_cluster: security.elkeid.hub
+
+hub:
+  credentials:
+    ak: datlvoxq7ww5putf
+    sk: b4f6owpzyklit9j82rx5xsfsaojsezyt
+
+es:
+  host: []
+  gzip: false
+  sniff: false
+  user: ""
+  password: ""
+  cleanup_days: 7

@@ -1,0 +1,46 @@
+baseline_id: 1200
+baseline_version: 1.0
+baseline_name: "字节跳动最佳实践-centos基线检查"
+baseline_name_en: "bytedance Standard-centos Security Baseline Check"
+system:
+  - "centos"
+check_list:
+  -
+    check_id: 1
+    type: "Identification"
+    title: "Ensure password expiration is 180 days or less"
+    description: "The PASS_MAX_DAYS parameter in /etc/login.defs allows an administrator to force passwords to expire once they reach a defined age. It is recommended that the PASS_MAX_DAYS parameter be set to less than or equal to 90 days."
+    solution: "Set the PASS_MAX_DAYS parameter to conform to site policy in /etc/login.defs: PASS_MAX_DAYS 90. Modify user parameters for all users with a password set to match: # chage --maxdays 90 <user>. Notes: You can also check this setting in /etc/shadow directly. The 5th field should be 365 or less for all users with a password. A value of -1 will disable password expiration. Additionally the password expiration must be greater than the minimum days between password changes or users will be unable to change their password"
+    security: "high"
+    type_cn: "身份鉴别"
+    title_cn: "设置密码失效时间<=90天"
+    description_cn: "请设置密码失效时间，定期修改密码策略，减少密码被泄漏和猜测风险，使用非密码登陆方式(如密钥对)请忽略此项。"
+    solution_cn: "使用非密码登陆方式如密钥对，请忽略此项。\n采用root权限登录系统;\n输入:\n在 /etc/login.defs;\n将 PASS_MAX_DAYS 参数设置<=90"
+    check:
+      rules:
+        - type: "file_line_check"
+          param:
+            - "/etc/login.defs"
+          filter: '\s*\t*PASS_MAX_DAYS\s*\t*(\d+)'
+          result: '$(<=)90'
+  -
+    check_id: 2
+    type: "security audit"
+    title: "Ensure auditd Service is enabled"
+    description: "Once the auditd package is installed it needs to be activated."
+    solution: "Run the following command to enable auditd: # systemctl enable auditd"
+    security: "high"
+    type_cn: "安全审计"
+    title_cn: "确保开启日志守护进程(auditd)"
+    description_cn: "确保auditd服务已启用，记录日志用于审计。"
+    solution_cn: "运行以下命令启用auditd服务：\nsystemctl --now enable auditd"
+    check:
+      rules:
+        - type: "command_check"
+          param:
+            - "systemctl is-enabled auditd"
+          result: 'enabled'
+        - type: "command_check"
+          param:
+            - "systemctl status auditd"
+          result: 'active \(running\)'
